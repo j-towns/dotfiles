@@ -14,6 +14,8 @@ Plugin 'ycm-core/YouCompleteMe'
 call vundle#end()
 
 filetype indent plugin on
+set shiftwidth=2
+set softtabstop=2
 set expandtab
 
 syntax on
@@ -29,11 +31,22 @@ set wildmenu
 set incsearch
 set autoread
 set number
+set ignorecase
 set smartcase
+set visualbell
+set cmdheight=2
+set ttimeout ttimeoutlen=10  " Reduce delay on esc key
+
+" Yank to EOL instead of whole line
+map Y y$
+
+" Map <C-L> (redraw screen) to also turn off search highlighting until the
+" next search
+nnoremap <C-L> :nohl<CR><C-L>
 
 packadd! matchit
 
-set background=dark
+set background=light
 colorscheme solarized
 let g:airline_theme='solarized'
 let g:airline_powerline_fonts = 1
@@ -65,6 +78,5 @@ endif
 au VimEnter * let g:ycm_semantic_triggers.tex=g:vimtex#re#youcompleteme
 
 " Easily flick between tabs
-nnoremap <Leader>r <C-L>
-nnoremap <C-L> gt
-nnoremap <C-h> gT
+nnoremap <C-n> gt
+nnoremap <C-p> gT
