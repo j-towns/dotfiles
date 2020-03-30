@@ -14,7 +14,9 @@ Plugin 'ycm-core/YouCompleteMe'
 call vundle#end()
 
 filetype indent plugin on
+
 set shiftwidth=2
+set textwidth=79
 set softtabstop=2
 set expandtab
 
