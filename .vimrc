@@ -3,14 +3,24 @@ filetype off
 
 call plug#begin()
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'lervag/vimtex'
-Plug 'ycm-core/YouCompleteMe'
+if !has('nvim')
+  Plug 'ycm-core/YouCompleteMe'
+endif
 Plug 'tpope/vim-surround'
 Plug 'dag/vim-fish'
-Plug 'edwinb/idris2-vim'
-Plug 'morhetz/gruvbox'
+if !has('nvim')
+  Plug 'edwinb/idris2-vim'
+endif
+if has('nvim')
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'MunifTanjim/nui.nvim'
+  Plug 'ShinKage/idris2-nvim'
+  Plug 'MunifTanjim/nui.nvim'
+endif
 call plug#end()
 
 filetype plugin indent on
@@ -23,7 +33,9 @@ set backspace=indent,eol,start
 set ruler
 set laststatus=2
 set confirm
-set ttymouse=sgr
+if !has('nvim')
+  set ttymouse=sgr
+endif
 set mouse=a
 set hlsearch
 set showcmd
@@ -38,11 +50,15 @@ set cmdheight=2
 set ttimeout ttimeoutlen=10  " Reduce delay on esc key
 set sw=2
 set termguicolors
+set formatoptions+=j
+set history=1000
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Recommended settings for Kitty terminal
 " Mouse support
-set balloonevalterm
+if !has('nvim')
+  set balloonevalterm
+endif
 " Styled and colored underline support
 let &t_AU = "\e[58:5:%dm"
 let &t_8u = "\e[58:2:%lu:%lu:%lum"
@@ -97,15 +113,9 @@ nnoremap <C-L> :nohl<CR><C-L>
 
 packadd! matchit
 
-autocmd vimenter * ++nested colorscheme gruvbox
-set background=dark
-" try
-"   colorscheme solarized
-" catch /^Vim\%((\a\+)\)\=:E185/
-" endtry
-" let g:airline_theme='solarized'
+autocmd vimenter * ++nested colorscheme retrobox
 let g:airline_powerline_fonts = 1
-" let g:airline#extensions#vimtex#enabled = 0
+let g:airline_theme='base16_gruvbox_dark_medium'
 
 nnoremap <Leader>w <C-w>
 
@@ -116,40 +126,28 @@ iabbrev ipdb from IPython.terminal.debugger import set_trace; set_trace()
 iabbrev ijnp import jax.numpy as jnp
 iabbrev inp import numpy as np
 
-" Use YCM tab completion in command-line window
-autocmd CmdwinEnter * inoremap <expr><buffer> <TAB>
-      \ pumvisible() ? "\<C-n>" : "\<TAB>"
 " Enable YCM symbol search
 nmap <leader>yfs <Plug>(YCMFindSymbolInWorkspace)
 nmap <leader>gt :YcmCompleter GoTo<CR>
 nmap <leader>gd :YcmCompleter GetDoc<CR>
 " nmap <leader>ygd <Plug>(YCMFindSymbolInWorkspace)
 
-" According to the vimtex docs this is required to enable ycm completions in
-" tex/latex
 let g:tex_flavor='latex'
 
+" According to the vimtex docs this is required to enable ycm completions in
+" tex/latex
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
 endif
 au VimEnter * let g:ycm_semantic_triggers.tex=g:vimtex#re#youcompleteme
+
 " let g:ycm_server_python_interpreter = '/usr/local/bin/python3'
 
 let g:vimtex_view_method = 'skim'
 
-
-" Set italic escape codes, see
-" https://www.reddit.com/r/vim/comments/24g8r8/italics_in_terminal_vim_and_tmux/
-" set t_ZH=[3m
-" set t_ZR=[23m
-
 " Easily flick between tabs
 nnoremap <C-n> gt
 nnoremap <C-p> gT
-
-nnoremap gb :ls<CR>:buffer<Space>
-
-let g:googly_indentation=0
 
 " Some things (such as plugin updating) can fail within a fish session without
 " this flag
@@ -159,6 +157,3 @@ set shell=bash
 set clipboard=unnamed
 
 set encoding=utf-8
-
-" These is the escape code for italic
-set t_ZH=[3m
